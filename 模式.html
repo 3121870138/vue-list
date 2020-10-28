@@ -1,0 +1,339 @@
+<!--
+ * @Descripttion : 前端常用的设计模式
+ * @Autor        : 李晓超
+ * @Date         : 2020-05-28 14:07:59
+ * @LastEditTime : 2020-06-17 11:36:31
+ * @FilePath     : \模式.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div></div>
+    <button id="loginBtn">loginBtn</button>
+</body>
+
+<script>
+    /**
+     * ### 单例模式
+     * 定义: 是保证一个类只有一个实例, 并且提供一个访问它的全局访问点。
+     * 需求: 一些对象我们往往只需要一个,比如线程池、全局缓存、浏览器中的window对象、登录浮窗等。
+     * 实现: 用一个变量标识当前是否已经为某个类创建过对象, 如果是, 则在下一次获取这个类的实例时, 直接返回之前创建的对象。
+     * 优点: 
+     *      1. 可以用来划分命名空间, 减少全局变量的数量.
+     *      2. 可以被实例化, 且实例化一次, 再次实例化生成的也是第一个实例.
+     * */
+    // var Singleton = function (name) {
+    //     this.name = name
+    //     this.instance = null
+    // }
+    // Singleton.prototype.getName = function () {
+    //     return this.name
+    // }
+    // // 获取实例对象
+    // Singleton.getInstance = function (name) {
+    //     if (!this.instance) {
+    //         this.instance = new Singleton(name)
+    //     }
+    //     return this.instance
+    // }
+    // // 测试单例模式的实例
+    // var a = Singleton.getInstance('aa')
+    // var b = Singleton.getInstance('bb')
+
+    // 实践例子
+    // (function () {
+    //     // 管理单例的逻辑代码,如果没有数据则创建,有数据则返回
+    //     var getSingle = function (fn) {
+    //         var result;
+    //         return function () {  // 判断是Null或赋值
+    //             return result || (result = fn.apply(this, arguments))
+    //         }
+    //     };
+    //     // 创建登录窗口方法
+    //     var createLoginLayer = function () {
+    //         var div = document.createElement('div')
+    //         div.innerHTML = '我是登录浮窗'
+    //         div.style.display = 'none'
+    //         div.style.width = '300px'
+    //         div.style.height = '300px'
+    //         div.style.border = '1px solid red'
+    //         document.body.appendChild(div)
+    //         return div
+    //     }
+    //     // 单例方法
+    //     var createSingLoginLayer = getSingle(createLoginLayer)
+    //     // 使用惰性单例, 进行创建
+    //     document.getElementById('loginBtn').onclick = function () {
+    //         var loginLayer = createSingLoginLayer()
+    //         console.log(loginLayer)
+    //         loginLayer.style.display = 'block'
+    //     }
+    // })()
+
+    {
+        /**
+         * ### 观察者模式
+         * 定义: 对象间的一种对多的依赖关系。
+         * 需求: 当一个对象的状态发生变化时, 所有依赖于他的对象都将得到通知。
+         * 优点: 时间上的解耦, 对象之间的解耦。
+         * 实现: 
+         *      1. 首先, 指定好谁充当发布者;
+         *      2. 然后, 给发布者添加一个缓存列表, 用于存放回调函数以便通知订阅者;
+         *      3. 最后, 发布消息的时候, 发布者会遍历这个缓存列表, 依次触发里面存放的订阅者回调函数。
+        */
+
+        // 基础例子：
+        // var shouLou = {}       // 定义售楼处
+        // shouLou.clientList = [] // 缓存列表, 存放订阅者的回调函数
+        // shouLou.listen = function (fn) {      // 增加订阅者 
+        //     this.clientList.push(fn)           // 订阅的消息添加进行缓存列表
+        // }
+        // shouLou.trigger = function () {
+        //     for (var i = 0, fn; fn = this.clientList[i++];) {
+        //         fn.apply(this, arguments);             // arguments 是发布消息时带上的参数
+        //     }
+        // }
+        // // 调用
+        // shouLou.listen(function (price, squareMeter) {
+        //     console.log('价格 = ' + price, 'squareMeter = ' + squareMeter)
+        // })
+        // shouLou.trigger(20000, 88)
+        // shouLou.trigger(22222, 88)
+
+        // 实践例子: 登录页面登录后, 会需要刷新各个模块的信息(头像, nav) 这类
+        // var ObserverEvent = (function () {
+        //     var clientList = [], listen, trigger, remove;
+        //     listen = function (key, fn) {
+        //         if (!clientList[key]) {
+        //             clientList[key] = []
+        //         }
+        //         clientList[key].push(fn)
+        //     };
+        //     trigger = function () {
+        //         var key = Array.prototype.shift.call(arguments), fns = clientList[key];
+        //         if (!fns || fns.length === 0) {
+        //             return
+        //         }
+        //         for (var i = 0, fn; fn = fns[i++];) {
+        //             fn.apply(this, arguments)
+        //         }
+        //     };
+        //     remove = function (key, fn) {
+        //         var fns = clientList[key]
+        //         if (!fns) {
+        //             return false;
+        //         }
+        //         if (!fn) {
+        //             fns && (fns.length = 0)
+        //         } else {
+        //             for (var l = fns.length - 1; l >= 0; l--) {
+        //                 var _fn = fns[l];
+        //                 if (_fn === fn) {
+        //                     fns.splice(l, 1);
+        //                 }
+        //             }
+        //         }
+        //     };
+        //     return {
+        //         listen,
+        //         trigger,
+        //         remove
+        //     }
+        // })();
+        // ObserverEvent.listen('squareMeter88', fn1 = function (price) {
+        //     console.log('价格 = ' + price);
+        // });
+        // ObserverEvent.listen('pfm', function (num) {
+        //     console.log('平方米 = ' + num);
+        // });
+        // ObserverEvent.trigger('squareMeter88', 200000);
+        // ObserverEvent.trigger('pfm', 2020);
+
+        // //刷新模块信息
+        // var header = (function () {
+        //     ObserverEvent.listen('loginSucc', function (data) {
+        //         header.setAvatar(data.avatar);
+        //     });
+        //     return {
+        //         setAvatar: function (data) {
+        //             console.log(data + "设置header成功");
+        //         }
+        //     }
+        // })();
+        // var nav = (function () {
+        //     ObserverEvent.listen('loginSucc', function (data) {
+        //         nav.setAvatar(data.avatar)
+        //     });
+        //     return {
+        //         setAvatar: function (data) {
+        //             console.log(data + '设置nav成功');
+        //         }
+        //     }
+        // })();
+        // var data = {};
+        // data.avatar = "参数";
+        // ObserverEvent.trigger('loginSucc', data);
+    }
+
+
+    {
+        /**
+            ### 工厂模式:
+            定义: 将其成员对象那个的实例化推迟到子类来实现的类。
+            需求: 创建对象的流程赋值的时候, 比如依赖于很多设置文件等; 处理大量具有相同属性的小对象; 注: 不能滥用
+            优点: 不暴露创建对象的具体逻辑, 而是将将逻辑封装在一个函数中。
+            分类: 简单工厂, 工厂方法和抽象工厂。
+        */
+
+        // 实现： 
+        // 简单工厂模式(创建单一对象, 需要的类比较少)
+
+        // let UserFactory = function (role) {
+        //     function SuperAdmin() {
+        //         this.name = '超级管理员'
+        //         this.viewPage = ['首页', '通讯录', '发现页', '应用数据', '权限管理']
+        //     }
+        //     function Admin() {
+        //         this.name = '管理员'
+        //         this.viewPage = ['首页', '通讯录', '发现页', '应用数据']
+        //     }
+        //     function NormalUser() {
+        //         this.name = '普通用户'
+        //         this.viewPage = ['首页', '通讯录', '发现页']
+        //     }
+        //     var user = null
+        //     switch (role) {
+        //         case 'superAdmin':
+        //             user = new SuperAdmin();
+        //             break;
+        //         case 'admin':
+        //             user = new Admin();
+        //             break;
+        //         case 'user':
+        //             user = new NormalUser();
+        //             break;
+        //         default:
+        //             throw new Error('参数错误, 可选参数：superAdmin、admin、user')
+        //     }
+        //     return user
+        // }
+        // console.log(UserFactory('admin'))
+
+
+        // 工厂方法模式(创建多类对象, 需要的类比较多)
+        // 为方便后续新增类方便, 只需改一处代码, 封装了工厂方法而已。并且把类都放在工厂类原型中实现。
+
+        // 安全模式创建的工厂方法函数
+        let UserFactory = function (role) {
+            if (this instanceof UserFactory) {
+                return new this[role]()
+            } else {
+                return new UserFactory(role)
+            }
+        }
+        // 工厂方法函数的原型中设置所有对象的构造函数
+        // UserFactory.prototype = {
+        //     SuperAdmin: function () {
+        //         this.name = '超级管理员'
+        //         this.viewPage = ['首页', '通讯录', '发现页', '应用数据', '权限管理']
+        //     },
+        //     Admin: function () {
+        //         this.name = "管理员"
+        //         this.viewPage = ['首页', '通讯录', '发现页', '应用数据']
+        //     },
+        //     NormalUser: function () {
+        //         this.name = '普通用户'
+        //         this.viewPage = ['首页', '通讯录', '发现页']
+        //     }
+        // }
+        // //调用
+        // let superAdmin = new UserFactory('Admin');
+        // console.log(superAdmin, 'superAdmin')
+        // let admin = UserFactory('Admin')
+        // let normalUser = UserFactory('NormalUser')
+
+
+
+        let arr = [
+            {
+                childList: [
+                    {
+                        id: 0, child: '哈哈哈', childList: [
+                            { id: 0, child: '嘤嘤嘤' },
+                            { id: 1, child: '嘤嘤嘤' },
+                            { id: 2, child: '嘤嘤嘤' },
+                        ]
+                    },
+                    { id: 1, child: '哈哈哈' },
+                    { id: 2, child: '哈哈哈' },
+                ]
+            },
+            {
+                childList: [
+                    { id: 0, child: '哈哈哈' },
+                    { id: 1, child: '哈哈哈' },
+                    { id: 2, child: '哈哈哈' },
+                ]
+            }
+        ]
+
+
+        arr.forEach((v, i) => {
+            // console.log(v, i, typeof (v))
+            // for (const key in v) {
+            //     console.log(v[key], '第二层')
+            //     if (v[key].childList) {
+            //         console.log('我有')
+            //     } else {
+            //         console.log('我没有')
+            //     }
+            // }
+        })
+
+
+
+        function rand(m) {
+            m = m > 16 ? 16 : m;
+            var num = Math.random().toString();
+            if (num.substr(num.length - m, 1) === '0') {
+                return rand(m);
+            }
+            return num.substring(num.length - m);
+        }
+
+        //产生15位随机数
+        function yjid() {
+            var nowTime = new Date().getTime()
+            //前6位取时间
+            var nowTimestr = nowTime.toString().substring(7);
+            //后9位随机
+            return nowTimestr + rand(9);
+        }
+
+        let tt = []
+        do {
+            tt.push(yjid())
+        } while (tt.length < 20);
+
+        let str = ''
+        tt.forEach((v, i) => {
+            str += `${v} \n`
+            return str
+        })
+        console.log(str)
+
+
+
+    }
+
+
+</script>
+
+</html>

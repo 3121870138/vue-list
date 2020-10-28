@@ -1,0 +1,77 @@
+<!--
+ * @Descripttion : 
+ * @Autor        : 李晓超
+ * @Date         : 2020-06-12 10:39:20
+ * @LastEditTime : 2020-06-21 15:44:29
+ * @FilePath     : \es6.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+
+    function doSomething() {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('done')
+            }, 1000)
+        })
+    }
+
+    function getUser(itm, time = 1000) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(itm)
+            }, time)
+        })
+    }
+
+    function getOrderByUser(itm, time = 1000) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(itm)
+            }, time)
+        })
+    }
+
+    function getOrderItemsByOrder(itm, time = 1000) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(itm)
+            }, time)
+        })
+    }
+
+    async function getItems() {
+        const user = await getUser('第一');
+        const order = await getOrderByUser('第二');
+        const items = await getOrderItemsByOrder('第三');
+        return { user, order, items }
+    }
+
+    getItems()
+        .then(items => {
+            // 处理排序后的成员
+            console.log(items, 'items')
+        })
+        .catch(err => {
+            return err
+        })
+
+
+
+    
+
+</script>
+
+</html>
